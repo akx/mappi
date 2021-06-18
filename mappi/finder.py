@@ -1,7 +1,7 @@
 import itertools
 import random
 import time
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Set
 
 from mappi.models import MappiFunction, Result, Context
 
@@ -16,7 +16,8 @@ def test_func(
     }
     try:
         vals = {
-            x: func.func(x, **values) % context.output_range for x in context.input_values
+            x: func.func(x, **values) % context.output_range
+            for x in context.input_values
         }
     except ZeroDivisionError:
         return None
@@ -43,6 +44,7 @@ def test_func(
 
 def find_results(context: Context) -> Tuple[List[Result], bool]:
     results: List[Result] = []
+    seen_exprs: Set[str] = set()
     last_print_time = init_time = time.time()
     for attempt in itertools.count():
         try:
@@ -62,9 +64,16 @@ def find_results(context: Context) -> Tuple[List[Result], bool]:
                 random.choice(context.functions),
             )
             if result:
-                if not results or result.score < results[-1].score:
+                if (
+                    not results
+                    or result.score < results[-1].score
+                    and result.substituted_expression not in seen_exprs
+                ):
                     print("FOUND:", result.format())
                     results.append(result)
+                    seen_exprs.add(result.substituted_expression)
+                elif context.print_all:
+                    print(".....", result.format())
         except KeyboardInterrupt:
             print()
             return (results, True)

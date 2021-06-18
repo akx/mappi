@@ -70,6 +70,12 @@ def get_argument_parser():
     ap.add_argument(
         "--time-limit", type=float, default=30, help="time limit for finding functions"
     )
+    ap.add_argument(
+        "--print-all",
+        action="store_true",
+        default=False,
+        help="print all matching functions, not only improvements",
+    )
     return ap
 
 
@@ -86,6 +92,7 @@ def main() -> None:
         var_max=args.var_max,
         time_limit=args.time_limit,
         strict_order=args.strict_order,
+        print_all=args.print_all,
     )
     if not context.functions:
         ap.error("No functions (use --function or --default-functions)")

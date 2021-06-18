@@ -61,3 +61,4 @@ class Context:
     var_max: int
     time_limit: float
     strict_order: bool
+    print_all: bool
