@@ -14,9 +14,12 @@ def test_func(
         name: random.randint(context.var_min, context.var_max)
         for name in func.variables
     }
-    vals = {
-        x: func.func(x, **values) % context.output_range for x in context.input_values
-    }
+    try:
+        vals = {
+            x: func.func(x, **values) % context.output_range for x in context.input_values
+        }
+    except ZeroDivisionError:
+        return None
     if len(set(vals.values())) == context.output_range:
         substituted_expression = f"({func.substitute(values)}) % {context.output_range}"
         verify_func = eval(f"lambda x: {substituted_expression}")
