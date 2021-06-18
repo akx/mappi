@@ -30,3 +30,14 @@ Original:   x*a+b
 Expression: (x*3+2) % 5
 Mapping:    {1: 0, 3: 1, 5: 2, 7: 3, 19: 4}
 ```
+
+Use a custom function:
+
+```shell
+$ python3 -m mappi --function 'x<<(a>>b)&c' --input 10,32,35,72,691
+
+=== BEST RESULT ===
+Original:   x<<(a>>b)&c
+Expression: (x<<(8>>6)&205) % 5
+Mapping:    {10: 3, 32: 0, 35: 1, 72: 2, 691: 4}
+```

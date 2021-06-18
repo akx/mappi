@@ -35,15 +35,46 @@ def get_functions(
     return [MappiFunction.parse(name, func) for (name, func) in function_map.items()]
 
 
+def get_argument_parser():
+    ap = argparse.ArgumentParser(prog="mappi")
+    ap.add_argument(
+        "--input",
+        required=True,
+        type=parse_input_values,
+        help="input values (JSON or Python expression)",
+    )
+    ap.add_argument(
+        "--strict-order",
+        action="store_true",
+        default=False,
+        help="require the output mapping to be in the same order as the input",
+    )
+    ap.add_argument(
+        "--function",
+        dest="functions",
+        nargs="*",
+        default=[],
+        help="define a function expression to test",
+    )
+    ap.add_argument(
+        "--default-functions",
+        action="store_true",
+        help="also try the default functions",
+    )
+    ap.add_argument(
+        "--var-min", type=int, default=0, help="minimum value for free variables"
+    )
+    ap.add_argument(
+        "--var-max", type=int, default=255, help="maximum value for free variables"
+    )
+    ap.add_argument(
+        "--time-limit", type=float, default=30, help="time limit for finding functions"
+    )
+    return ap
+
+
 def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--input", required=True, type=parse_input_values)
-    ap.add_argument("--strict-order", action="store_true", default=False)
-    ap.add_argument("--function", dest="functions", nargs="*", default=[])
-    ap.add_argument("--default-functions", action="store_true")
-    ap.add_argument("--var-min", type=int, default=0)
-    ap.add_argument("--var-max", type=int, default=255)
-    ap.add_argument("--time-limit", type=float, default=30)
+    ap = get_argument_parser()
     args = ap.parse_args()
     context = Context(
         functions=get_functions(
