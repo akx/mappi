@@ -43,6 +43,13 @@ class Result:
     func: MappiFunction
     substituted_expression: str
     mapping: dict
+    is_ordered: bool
+
+    def format(self) -> str:
+        s = f"{self.substituted_expression} mapping {self.mapping}"
+        if self.is_ordered:
+            s += " (ordered)"
+        return s
 
 
 @dataclasses.dataclass

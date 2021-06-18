@@ -20,11 +20,11 @@ def test_func(
     if len(set(vals.values())) == context.output_range:
         substituted_expression = f"({func.substitute(values)}) % {context.output_range}"
         verify_func = eval(f"lambda x: {substituted_expression}")
-        if context.strict_order:
-            if not all(
-                verify_func(iv) == i for (i, iv) in enumerate(context.input_values)
-            ):
-                return None
+        is_ordered = all(
+            verify_func(iv) == i for (i, iv) in enumerate(context.input_values)
+        )
+        if context.strict_order and not is_ordered:
+            return None
         assert len(set(verify_func(iv) for iv in context.input_values)) == len(
             context.input_values
         )
@@ -33,6 +33,7 @@ def test_func(
             func=func,
             substituted_expression=substituted_expression,
             mapping=vals.copy(),
+            is_ordered=is_ordered,
         )
     return None
 
@@ -59,12 +60,7 @@ def find_results(context: Context) -> Tuple[List[Result], bool]:
             )
             if result:
                 if not results or result.score < results[-1].score:
-                    print(
-                        "FOUND:",
-                        result.substituted_expression,
-                        "mapping",
-                        result.mapping,
-                    )
+                    print("FOUND:", result.format())
                     results.append(result)
         except KeyboardInterrupt:
             print()
