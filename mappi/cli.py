@@ -76,6 +76,12 @@ def get_argument_parser():
         default=False,
         help="print all matching functions, not only improvements",
     )
+    ap.add_argument(
+        "--no-modulo",
+        action="store_true",
+        default=False,
+        help="don't include modulo in expressions",
+    )
     return ap
 
 
@@ -93,6 +99,7 @@ def main() -> None:
         time_limit=args.time_limit,
         strict_order=args.strict_order,
         print_all=args.print_all,
+        no_modulo=args.no_modulo,
     )
     if not context.functions:
         ap.error("No functions (use --function or --default-functions)")

@@ -10,19 +10,21 @@ def test_func(
     context: Context,
     func: MappiFunction,
 ) -> Optional[Result]:
-    values = {
-        name: context.generate_value()
-        for name in func.variables
-    }
+    values = {name: context.generate_value() for name in func.variables}
+    if context.no_modulo:
+        compute = lambda x: func.func(x, **values)
+    else:
+        compute = lambda x: func.func(x, **values) % context.output_range
     try:
-        vals = {
-            x: func.func(x, **values) % context.output_range
-            for x in context.input_values
-        }
+        vals = {x: compute(x) for x in context.input_values}
     except ZeroDivisionError:
         return None
     if len(set(vals.values())) == context.output_range:
-        substituted_expression = f"({func.substitute(values)}) % {context.output_range}"
+        substituted_expression = f"({func.substitute(values)})"
+        if not context.no_modulo:
+            substituted_expression = (
+                f"{substituted_expression} % {context.output_range}"
+            )
         verify_func = eval(f"lambda x: {substituted_expression}")
         is_ordered = all(
             verify_func(iv) == i for (i, iv) in enumerate(context.input_values)
