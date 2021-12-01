@@ -1,4 +1,5 @@
 import dataclasses
+import random
 import re
 from typing import Callable, Set, Dict, Any, List
 
@@ -62,3 +63,6 @@ class Context:
     time_limit: float
     strict_order: bool
     print_all: bool
+
+    def generate_value(self) -> int:
+        return random.randint(self.var_min, self.var_max)

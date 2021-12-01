@@ -98,6 +98,7 @@ def main() -> None:
         ap.error("No functions (use --function or --default-functions)")
 
     print(f"Input values: {context.input_values}")
+    print(f"Free variable range: {context.var_min}..{context.var_max}")
     print(f"Output range: 0..{context.output_range - 1}")
     print(f"Using {len(context.functions)} functions")
 

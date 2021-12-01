@@ -11,7 +11,7 @@ def test_func(
     func: MappiFunction,
 ) -> Optional[Result]:
     values = {
-        name: random.randint(context.var_min, context.var_max)
+        name: context.generate_value()
         for name in func.variables
     }
     try:
